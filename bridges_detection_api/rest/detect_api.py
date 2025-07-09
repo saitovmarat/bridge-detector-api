@@ -1,12 +1,12 @@
+import base64
 import os
 from PIL import Image
-import zipfile
-import cv2
+from zipfile import ZipFile, BadZipFile
 from flask import Blueprint, jsonify, request, send_file
 import io
 from ultralytics import YOLO
 from bridges_detection_api.use_cases.annotate import annotated_image
-from bridges_detection_api.use_cases.preprocess_img import preprocess_image
+from bridges_detection_api.use_cases.preprocess_img_dto import preprocess_image_dto
 from bridges_detection_api.use_cases.detect import detected_objects
 
 
@@ -28,16 +28,13 @@ def detect():
         return jsonify({"error": "Empty filename"}), 400
 
     try:
-        img_bgr = preprocess_image(file.stream)
-        detections = detected_objects(img_bgr, model)
-        annotated_img = annotated_image(img_bgr, detections)
+        img_dto = preprocess_image_dto(file.stream)
+        detections = detected_objects(img_dto, model)
+        annotated_img_dto = annotated_image(img_dto, detections)
         
-        annotated_pil = Image.fromarray(annotated_img)
-        img_io = io.BytesIO()
-        annotated_pil.save(img_io, format='JPEG')
-        img_io.seek(0)
-
-        return send_file(img_io, mimetype='image/jpeg')
+        image_bytes = base64.b64decode(annotated_img_dto.image_data)
+        img_io = io.BytesIO(image_bytes)
+        return send_file(img_io, mimetype='image/png')
 
     except Exception as e:
         return jsonify({"error": "Internal server error", "details": str(e)}), 500
@@ -63,26 +60,33 @@ def detect_batch_save():
 
     try:
         with io.BytesIO(file.read()) as zip_data:
-            with zipfile.ZipFile(zip_data, 'r') as zip_ref:
+            with ZipFile(zip_data, 'r') as zip_ref:
+                annotated_images = []
                 for filename in zip_ref.namelist():
                     if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
                         with zip_ref.open(filename) as img_file:
-                            img_bgr = preprocess_image(img_file)
-                            detections = detected_objects(img_bgr, model)
-                            annotated_img = annotated_image(img_bgr, detections)
+                            img_dto = preprocess_image_dto(img_file)
+                            detections = detected_objects(img_dto, model)
+                            annotated_img_dto = annotated_image(img_dto, detections)
+                            
+                            annotated_images.append(annotated_img_dto)
+            
+        os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-                            new_name = os.path.splitext(filename)[0] + '_detected.jpg'
-                            output_path = os.path.join(OUTPUT_DIR, new_name)
+        for idx, annotated_img_dto in enumerate(annotated_images):
+            image_bytes = base64.b64decode(annotated_img_dto.image_data)
+            img_io = io.BytesIO(image_bytes)
+            annotated_pil = Image.open(img_io)
 
-                            annotated_pil = Image.fromarray(cv2.cvtColor(annotated_img, cv2.COLOR_BGR2RGB))
-                            annotated_pil.save(output_path, format='JPEG')
-
+            output_path = os.path.join(OUTPUT_DIR, f"image_{idx}_annotated.jpg")
+            annotated_pil.save(output_path, format='JPEG')
+            
         return jsonify({
             "message": "Images saved successfully",
             "path": os.path.abspath(OUTPUT_DIR)
         }), 200
 
-    except zipfile.BadZipFile:
+    except BadZipFile:
         return jsonify({"error": "Invalid ZIP file"}), 400
     except Exception as e:
         return jsonify({"error": "Internal server error", "details": str(e)}), 500

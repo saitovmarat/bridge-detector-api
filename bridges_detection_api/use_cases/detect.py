@@ -1,29 +1,60 @@
-from numpy.typing import NDArray
 from typing import List
+import numpy as np
 from ultralytics import YOLO
-from bridges_detection_api.domain.detection_result import DetectionResult
+from ..domain.detection_result_dto import DetectionResultDTO
+from ..domain.image_dto import ImageDTO
 
 
-def detected_objects(img_bgr: NDArray, model: YOLO) -> List[DetectionResult]:
-    results = model(img_bgr)
+def detected_objects(
+    img_dto: ImageDTO, 
+    model: YOLO,
+    threshold: float = 0.2
+) -> List[DetectionResultDTO]:
+    
+    try:
+        img_array = np.array(img_dto.pixels, dtype=np.uint8)
+        if img_array.ndim != 3 or img_array.shape[2] != 3:
+            raise ValueError("Ожидается трехмерный массив с 3 каналами (H x W x C).")
+    except Exception as e:
+        raise ValueError(f"Ошибка преобразования изображения в массив: {e}")
+    
+    results = model(img_array)
+    
     detections = []
 
     for result in results:
         boxes = result.boxes
         for box in boxes:
-            x1, y1, x2, y2 = map(int, box.xyxy[0])
-            conf = float(box.conf[0])
-            cls = int(box.cls[0])
+            try:
+                x1, y1, x2, y2 = map(int, box.xyxy[0])
+                conf = float(box.conf[0])
+                cls = int(box.cls[0])
 
-            if conf > 0.2:
-                detection = DetectionResult(
-                    class_name=model.names[cls],
-                    confidence=conf,
-                    x1=x1,
-                    y1=y1,
-                    x2=x2,
-                    y2=y2
+                if conf < threshold:
+                    continue
+
+                class_name = _get_class_name(model, cls)
+
+                detections.append(
+                    DetectionResultDTO(
+                        class_name=class_name,
+                        confidence=conf,
+                        x1=x1,
+                        y1=y1,
+                        x2=x2,
+                        y2=y2
+                    )
                 )
-                detections.append(detection)
+            except Exception as e:
+                print(f"Ошибка при обработке бокса: {e}")
+                continue
 
     return detections
+
+
+def _get_class_name(model: YOLO, class_id: int) -> str:
+    """Возвращает имя класса по ID."""
+    try:
+        return model.names[class_id]
+    except (IndexError, KeyError) as e:
+        raise ValueError(f"Неверный ID класса: {class_id}") from e

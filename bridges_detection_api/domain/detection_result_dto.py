@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class DetectionResult:
+class DetectionResultDTO:
     class_name: str
     confidence: float
     x1: int
