@@ -33,7 +33,7 @@ def detected_objects(
                 if conf < threshold:
                     continue
 
-                class_name = _get_class_name(model, cls)
+                class_name = model.names[cls]
 
                 detections.append(
                     DetectionResultDTO(
@@ -50,11 +50,3 @@ def detected_objects(
                 continue
 
     return detections
-
-
-def _get_class_name(model: YOLO, class_id: int) -> str:
-    """Возвращает имя класса по ID."""
-    try:
-        return model.names[class_id]
-    except (IndexError, KeyError) as e:
-        raise ValueError(f"Неверный ID класса: {class_id}") from e
