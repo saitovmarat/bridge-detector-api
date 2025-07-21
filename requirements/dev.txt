@@ -1,11 +1,13 @@
 -r test.txt
 
-pip
-wheel
-flake8
-Sphinx
-Flask>=3.0.0
-Pillow>=9.0.0
-opencv-python>=4.5.0
-numpy>=1.21.0
-ultralytics>=8.0.0
+flake8==7.3.0
+mypy==1.5.1
+pyproject-hooks==1.2.0
+build==1.2.2.post1
+tox==4.27.0
+virtualenv==20.31.2
+sphinx==8.2.3
+sphinxcontrib-*
+pyparsing==3.2.3
+pygments==2.19.2
+roman-numerals-py==3.1.0
