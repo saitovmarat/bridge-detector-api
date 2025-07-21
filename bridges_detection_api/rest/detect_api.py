@@ -6,7 +6,7 @@ from flask import Blueprint, jsonify, request, send_file
 import io
 from ultralytics import YOLO
 from bridges_detection_api.use_cases.annotate import annotated_image
-from bridges_detection_api.use_cases.preprocess_img_dto import preprocess_image_dto
+from bridges_detection_api.use_cases.img_preprocessor import preprocess_image_dto
 from bridges_detection_api.use_cases.detect import detected_objects
 
 

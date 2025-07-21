@@ -1,3 +1,4 @@
+import logging
 from typing import List
 import numpy as np
 from ultralytics import YOLO
@@ -45,8 +46,11 @@ def detected_objects(
                         y2=y2
                     )
                 )
+            except KeyError as e:
+                logging.error(f"Неизвестный ID класса: {e}")
+                continue
             except Exception as e:
-                print(f"Ошибка при обработке бокса: {e}")
+                logging.error(f"Неожиданная ошибка: {type(e).__name__}: {e}")
                 continue
 
     return detections
