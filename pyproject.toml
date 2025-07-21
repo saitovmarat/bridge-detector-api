@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "API for detecting bridges on images"
 readme = "README.md"
 requires-python = ">=3.8"
-license = "MIT"
+license = {file = "LICENSE"}
 authors = [
   { name = "Marat Saitov", email = "maratsajtov@gmail.com" }
 ]
@@ -84,7 +84,9 @@ doc = [
 
 [tool.setuptools.packages.find]
 include = ["bridges_detection_api*"]
-exclude = ["output*"]
+
+[tool.setuptools.package-data]
+bridges_detection_api = ["assets/*.pt"]
 
 [project.urls]
 Homepage = "https://example.com"
