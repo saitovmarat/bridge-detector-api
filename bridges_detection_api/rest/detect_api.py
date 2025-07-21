@@ -1,5 +1,6 @@
 import base64
-import os
+from importlib import resources
+from pathlib import Path
 from PIL import Image
 from zipfile import ZipFile, BadZipFile
 from flask import Blueprint, jsonify, request, send_file
@@ -9,8 +10,11 @@ from bridges_detection_api.use_cases.annotate import annotated_image
 from bridges_detection_api.use_cases.img_preprocessor import preprocess_image_dto
 from bridges_detection_api.use_cases.detect import detected_objects
 
+def load_model():
+    with resources.path("bridges_detection_api.assets", "best_weights.pt") as model_path:
+        return YOLO(str(model_path))
 
-model = YOLO('./best_weights.pt')  
+model = load_model()
 blueprint = Blueprint('api', __name__)
 
 
@@ -55,8 +59,8 @@ def detect_batch_save():
     if not file.filename.endswith('.zip'):
         return jsonify({"error": "Only ZIP files are allowed"}), 400
 
-    OUTPUT_DIR = './output/results'
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    OUTPUT_DIR = Path("output") / "results"
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     try:
         with io.BytesIO(file.read()) as zip_data:
@@ -70,20 +74,18 @@ def detect_batch_save():
                             annotated_img_dto = annotated_image(img_dto, detections)
                             
                             annotated_images.append(annotated_img_dto)
-            
-        os.makedirs(OUTPUT_DIR, exist_ok=True)
 
         for idx, annotated_img_dto in enumerate(annotated_images):
             image_bytes = base64.b64decode(annotated_img_dto.image_data)
             img_io = io.BytesIO(image_bytes)
             annotated_pil = Image.open(img_io)
 
-            output_path = os.path.join(OUTPUT_DIR, f"image_{idx}_annotated.jpg")
+            output_path = OUTPUT_DIR / f"image_{idx}_annotated.jpg"
             annotated_pil.save(output_path, format='JPEG')
             
         return jsonify({
             "message": "Images saved successfully",
-            "path": os.path.abspath(OUTPUT_DIR)
+            "path": str(OUTPUT_DIR.resolve())
         }), 200
 
     except BadZipFile:
