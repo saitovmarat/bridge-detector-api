@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "API for detecting bridges on images"
 readme = "README.md"
 requires-python = ">=3.8"
-license = {text = "MIT"}
+license = "MIT"
 authors = [
   { name = "Marat Saitov", email = "maratsajtov@gmail.com" }
 ]
@@ -18,7 +18,6 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Framework :: Flask",
     "Topic :: Scientific/Engineering :: Image Processing",
@@ -83,7 +82,11 @@ doc = [
     "roman-numerals-py==3.1.0"
 ]
 
+[tool.setuptools.packages.find]
+include = ["bridges_detection_api*"]
+exclude = ["output*"]
+
 [project.urls]
-Homepage = "https://example.com "
-Repository = "https://github.com/saitovmarat/bridges_detection_api "
-Documentation = "https://example.com/docs "
+Homepage = "https://example.com"
+Repository = "https://github.com/saitovmarat/bridges_detection_api"
+Documentation = "https://example.com/docs"
