@@ -44,7 +44,6 @@ def test_rgb_to_bgr(test_image_stream):
     
     assert img_bgr.shape == (2, 2, 3)
     assert img_bgr.dtype == np.uint8
-    # Проверяем, что цвета поменялись местами
     assert not np.array_equal(img_np, img_bgr)
     
     

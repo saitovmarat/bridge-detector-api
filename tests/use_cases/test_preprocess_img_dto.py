@@ -3,7 +3,6 @@ from io import BytesIO
 from PIL import Image
 import numpy as np
 
-# Импорты твоих функций
 from bridges_detection_api.use_cases.img_preprocessor import preprocess_image_dto
 from bridges_detection_api.infrastructure.img_processing import (
     array_to_dto, 
@@ -26,9 +25,7 @@ def test_image_stream():
     return img_byte_arr
 
 
-# Тест: успешная обработка изображения
 def test_preprocess_image_dto_success(test_image_stream, mocker):
-    # Мокаем функции
     mock_load = mocker.patch(
         'bridges_detection_api.use_cases.img_preprocessor.load_image_from_bytes',
         wraps=load_image_from_bytes
@@ -42,10 +39,8 @@ def test_preprocess_image_dto_success(test_image_stream, mocker):
         wraps=array_to_dto
     )
 
-    # Вызов тестируемого метода
     result = preprocess_image_dto(test_image_stream)
 
-    # Проверки
     mock_load.assert_called_once_with(test_image_stream)
     mock_to_array.assert_called_once()
     mock_to_dto.assert_called_once()
