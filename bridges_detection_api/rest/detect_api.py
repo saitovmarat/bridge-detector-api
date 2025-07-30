@@ -1,5 +1,5 @@
 import base64
-from importlib import resources
+from importlib.resources import files, as_file
 from pathlib import Path
 from PIL import Image
 from zipfile import ZipFile, BadZipFile
@@ -11,7 +11,8 @@ from bridges_detection_api.use_cases.img_preprocessor import preprocess_image_dt
 from bridges_detection_api.use_cases.detect import detected_objects
 
 def load_model():
-    with resources.path("bridges_detection_api.assets", "best_weights.pt") as model_path:
+    ref = files("bridges_detection_api.assets") / "best_weights.pt"
+    with as_file(ref) as model_path:
         return YOLO(str(model_path))
 
 model = load_model()
