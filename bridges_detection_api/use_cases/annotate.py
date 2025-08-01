@@ -28,6 +28,6 @@ def annotated_image(
     im_pil = Image.fromarray(annotated_img)
 
     img_io = io.BytesIO()
-    im_pil.save(img_io, format='PNG')
+    im_pil.save(img_io, format='JPEG', quality=85, optimize=True)
 
     return AnnotatedImageDTO(image_data=base64.b64encode(img_io.getvalue()).decode())
