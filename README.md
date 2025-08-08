@@ -1,31 +1,25 @@
 # 🌉 BridgeVision Detection API
+**BridgeVision** is a real-time API for detecting bridges in videos and images. Built in Python, the project provides flexible integration with external video processing systems.
 
-**BridgeVision** — это API для детекции мостов на видео и изображениях в реальном времени. Проект разработан на Python и предоставляет гибкие возможности для интеграции с внешними системами обработки видео.
+## 🚀 Features
+- **Dual Operation Modes**:
+  Independent **REST** and **UDP** servers — choose the one that best suits your latency and scalability requirements.
+- **High Performance**:
+  **UDP** transport support enables low-latency frame processing.
+- **Graceful Shutdown**:
+  The server shuts down cleanly via `Ctrl+C` or `SIGTERM` — ideal for Docker and orchestration tools.
+- **Ready to Use**:
+  Distributed as a `.whl` package — install with a single command.
 
-## 🚀 Возможности
-
-- **Два режима работы**:  
-  Независимые серверы по протоколам **REST** и **UDP** — выбирайте нужный в зависимости от требований к задержке и масштабируемости.
-
-- **Высокая производительность**:  
-  Поддержка UDP-транспорта для обработки кадров с минимальной задержкой.
-
-- **Корректное завершение**:  
-  Сервер корректно завершает работу по `Ctrl+C` или сигналу `SIGTERM` — идеально для Docker и систем оркестрации.
-
-- **Готов к использованию**:  
-  Поставляется в виде `.whl`-пакета — установка одной командой.
-
-## 🧪 Технологии
-
+## 🧪 Technologies
 - **Python 3.8+**
-- **Flask** — веб-сервер
-- **Ultralytics YOLO** — детекция объектов
-- **OpenCV, Pillow, NumPy** — обработка изображений
-- **UDP/JSON/base64** — эффективный обмен данными
+- **Flask** — web server
+- **Ultralytics YOLO** — object detection
+- **OpenCV, Pillow, NumPy** — image processing
+- **UDP/JSON/base64** — efficient data exchange
 
 ## 📦 Установка
 ```bash
 pip install bridges_detection_api-X.X.X-py3-none-any.whl
 ```
-Вместо X.X.X укажите актуальную версию
+Replace `X.X.X` with the actual version number.
