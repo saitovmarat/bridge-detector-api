@@ -108,4 +108,6 @@ ENV/
 .vscode/
 .idea/
 
-output
+output/
+images/
+testing
