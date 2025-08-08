@@ -18,7 +18,7 @@
 - **OpenCV, Pillow, NumPy** — image processing
 - **UDP/JSON/base64** — efficient data exchange
 
-## 📦 Установка
+## 📦 Installation
 ```bash
 pip install bridges_detection_api-X.X.X-py3-none-any.whl
 ```
