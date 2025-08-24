@@ -3,13 +3,13 @@ from io import BytesIO
 from PIL import Image
 import numpy as np
 
-from bridges_detection_api.use_cases.img_preprocessor import preprocess_image_dto
-from bridges_detection_api.infrastructure.img_processing import (
+from bridge_detector_api.use_cases.img_preprocessor import preprocess_image_dto
+from bridge_detector_api.utils.img_processing import (
     array_to_dto, 
     image_to_array, 
     load_image_from_bytes
 )
-from bridges_detection_api.domain.image_dto import ImageDTO
+from bridge_detector_api.domain.image_dto import ImageDTO
 
 
 def create_test_image_array(height=100, width=100):
@@ -27,15 +27,15 @@ def test_image_stream():
 
 def test_preprocess_image_dto_success(test_image_stream, mocker):
     mock_load = mocker.patch(
-        'bridges_detection_api.use_cases.img_preprocessor.load_image_from_bytes',
+        'bridge_detector_api.use_cases.img_preprocessor.load_image_from_bytes',
         wraps=load_image_from_bytes
     )
     mock_to_array = mocker.patch(
-        'bridges_detection_api.use_cases.img_preprocessor.image_to_array',
+        'bridge_detector_api.use_cases.img_preprocessor.image_to_array',
         wraps=image_to_array
     )
     mock_to_dto = mocker.patch(
-        'bridges_detection_api.use_cases.img_preprocessor.array_to_dto',
+        'bridge_detector_api.use_cases.img_preprocessor.array_to_dto',
         wraps=array_to_dto
     )
 
@@ -46,13 +46,13 @@ def test_preprocess_image_dto_success(test_image_stream, mocker):
     mock_to_dto.assert_called_once()
     
     assert isinstance(result, ImageDTO)
-    assert result.format == "BGR"
+    assert result.format == "RGB"
 
 
 def test_preprocess_image_invalid_file(mocker):
     invalid_stream = BytesIO(b"not_an_image_data")
     mocker.patch(
-        'bridges_detection_api.use_cases.img_preprocessor.load_image_from_bytes',
+        'bridge_detector_api.use_cases.img_preprocessor.load_image_from_bytes',
         side_effect=ValueError("Cannot identify image file")
     )
 
@@ -62,15 +62,15 @@ def test_preprocess_image_invalid_file(mocker):
 
 def test_preprocess_image_function_call_order(test_image_stream, mocker):
     mock_load = mocker.patch(
-        'bridges_detection_api.use_cases.img_preprocessor.load_image_from_bytes',
+        'bridge_detector_api.use_cases.img_preprocessor.load_image_from_bytes',
         return_value=Image.new('RGB', (10, 10))
     )
     mock_to_array = mocker.patch(
-        'bridges_detection_api.use_cases.img_preprocessor.image_to_array',
+        'bridge_detector_api.use_cases.img_preprocessor.image_to_array',
         return_value=np.random.randint(0, 255, (10, 10, 3), dtype=np.uint8)
     )
     mock_to_dto = mocker.patch(
-        'bridges_detection_api.use_cases.img_preprocessor.array_to_dto',
+        'bridge_detector_api.use_cases.img_preprocessor.array_to_dto',
         autospec=True
     )
 

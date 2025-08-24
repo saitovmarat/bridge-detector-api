@@ -1,8 +1,8 @@
 import pytest
 
 
-from bridges_detection_api.app import create_rest_server
-from bridges_detection_api.settings import TestConfig
+from bridge_detector_api.app import create_rest_server
+from bridge_detector_api.settings import TestConfig
 
 
 @pytest.fixture(scope='function')

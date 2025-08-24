@@ -4,21 +4,21 @@ from PIL import Image
 import numpy as np
 import cv2
 from typing import List
-from ..domain.detection_result_dto import DetectionResultDTO 
+from ..domain.detection_dto import DetectionDTO 
 from ..domain.image_dto import ImageDTO
 from ..domain.annotated_image_dto import AnnotatedImageDTO
 
 
 def annotated_image(
     img_dto: ImageDTO,
-    detections: List[DetectionResultDTO]
+    detections: List[DetectionDTO]
 ) -> AnnotatedImageDTO:
     
     img = np.array(img_dto.pixels, dtype=np.uint8)
     annotated_img = img.copy()
 
     for det in detections:
-        x1, y1, x2, y2 = det.x1, det.y1, det.x2, det.y2
+        x1, y1, x2, y2 = int(det.x1), int(det.y1), int(det.x2), int(det.y2)
         label = f"{det.class_name} {det.confidence:.2f}"
 
         cv2.rectangle(annotated_img, (x1, y1), (x2, y2), (0, 255, 0), 2)

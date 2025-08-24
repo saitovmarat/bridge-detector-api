@@ -1,5 +1,5 @@
 import click
-from bridges_detection_api.app import create_udp_server, create_rest_server
+from .app import create_udp_server, create_rest_server
 
 @click.group()
 def cli():

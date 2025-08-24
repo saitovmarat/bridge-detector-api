@@ -1,4 +1,4 @@
-from bridges_detection_api.cli import cli
+from bridge_detector_api.cli import cli
 
 if __name__ == "__main__":
     cli()

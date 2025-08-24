@@ -4,10 +4,10 @@ from PIL import Image
 from zipfile import ZipFile, BadZipFile
 from flask import Blueprint, jsonify, request, send_file
 import io
-from bridges_detection_api.use_cases.annotate import annotated_image
-from bridges_detection_api.use_cases.img_preprocessor import preprocess_image_dto
-from bridges_detection_api.use_cases.detect import detected_objects
-from bridges_detection_api.utils.model_loader import load_model 
+from ..use_cases.annotate import annotated_image
+from ..use_cases.img_preprocessor import preprocess_image_dto
+from ..use_cases.detect_bridge import detect_bridge
+from ..utils.model_loader import load_model 
 
 
 model = load_model()
@@ -28,8 +28,8 @@ def detect():
         return jsonify({"error": "Empty filename"}), 400
 
     try:
-        img_dto = preprocess_image_dto(file.stream)
-        detections = detected_objects(img_dto, model)
+        img_dto = preprocess_image_dto(file.stream) # type: ignore
+        detections = detect_bridge(img_dto, model)
         annotated_img_dto = annotated_image(img_dto, detections)
         
         image_bytes = base64.b64decode(annotated_img_dto.image_data)
@@ -65,8 +65,8 @@ def detect_batch_save():
                 for filename in zip_ref.namelist():
                     if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
                         with zip_ref.open(filename) as img_file:
-                            img_dto = preprocess_image_dto(img_file)
-                            detections = detected_objects(img_dto, model)
+                            img_dto = preprocess_image_dto(img_file) # type: ignore
+                            detections = detect_bridge(img_dto, model)
                             annotated_img_dto = annotated_image(img_dto, detections)
                             
                             annotated_images.append(annotated_img_dto)

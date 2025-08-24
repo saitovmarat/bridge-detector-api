@@ -1,8 +1,8 @@
 from typing import Type
 from flask import Flask
-from bridges_detection_api.api import rest_api
-from bridges_detection_api.api.udp_api import run_udp_server
-from bridges_detection_api.settings import Config, DevConfig
+from .api import rest_api
+from .api.udp_api import run_udp_server
+from .settings import Config, DevConfig
 
 
 def create_rest_server(config_object: Type[Config]=DevConfig):

@@ -3,9 +3,9 @@ from unittest.mock import MagicMock, Mock
 
 import pytest
 
-from bridges_detection_api.domain.image_dto import ImageDTO
-from bridges_detection_api.domain.detection_result_dto import DetectionResultDTO
-from bridges_detection_api.use_cases.detect import detected_objects
+from bridge_detector_api.domain.image_dto import ImageDTO
+from bridge_detector_api.domain.detection_dto import DetectionResultDTO
+from bridge_detector_api.use_cases.detect_bridge import detected_objects
 
 
 def create_test_image_array(height=100, width=100):

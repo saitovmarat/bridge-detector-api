@@ -2,13 +2,13 @@ import io
 from PIL import Image
 import numpy as np
 import pytest
-from bridges_detection_api.infrastructure.img_processing import (
+from bridge_detector_api.utils.img_processing import (
     load_image_from_bytes,
     image_to_array,
     rgb_to_bgr,
     array_to_dto
 )
-from bridges_detection_api.domain.image_dto import ImageDTO
+from bridge_detector_api.domain.image_dto import ImageDTO
 
 
 @pytest.fixture
@@ -56,7 +56,7 @@ def test_array_to_dto(test_image_stream):
     assert isinstance(dto, ImageDTO)
     assert dto.width == 2
     assert dto.height == 2
-    assert dto.format == "BGR"
+    assert dto.format == "RGB"
     assert len(dto.pixels) == 2
     assert len(dto.pixels[0]) == 2
     assert len(dto.pixels[0][0]) == 3

@@ -2,10 +2,10 @@ import base64
 import numpy as np
 from PIL import Image, ImageChops
 from io import BytesIO
-from bridges_detection_api.domain.image_dto import ImageDTO
-from bridges_detection_api.domain.detection_result_dto import DetectionResultDTO
-from bridges_detection_api.domain.annotated_image_dto import AnnotatedImageDTO
-from bridges_detection_api.use_cases.annotate import annotated_image
+from bridge_detector_api.domain.image_dto import ImageDTO
+from bridge_detector_api.domain.detection_dto import DetectionResultDTO
+from bridge_detector_api.domain.annotated_image_dto import AnnotatedImageDTO
+from bridge_detector_api.use_cases.annotate import annotated_image
 
 
 def create_test_image(width=100, height=100):

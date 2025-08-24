@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "bridges_detection_api"
+name = "bridge_detector_api"
 version = "0.1.2"
 description = "API for detecting bridges on images"
 readme = "README.md"
@@ -83,15 +83,15 @@ doc = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["bridges_detection_api*"]
+include = ["bridge_detector_api*"]
 
 [tool.setuptools.package-data]
-bridges_detection_api = ["assets/*.pt"]
+bridge_detector_api = ["assets/*.pt"]
 
 [project.urls]
 Homepage = "https://example.com"
-Repository = "https://github.com/saitovmarat/bridges_detection_api"
+Repository = "https://github.com/saitovmarat/bridge-detector-api"
 Documentation = "https://example.com/docs"
 
 [project.scripts]
-bridges_detection_api = "bridges_detection_api.cli:cli"
+bridge_detector_api = "bridge_detector_api.cli:cli"
