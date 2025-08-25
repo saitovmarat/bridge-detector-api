@@ -7,7 +7,8 @@ from ..domain.arch_center_dto import ArchCenterDTO
 from ..domain.depth_estimator_interface import DepthEstimatorInterface
 
 
-_roi_buffer = {} 
+_roi_buffer = {}
+
 
 def find_arch_center(
     image,
@@ -57,22 +58,23 @@ def find_arch_center(
         buf["widths"].append(raw_roi_w)
         buf["heights"].append(raw_roi_h)
 
-        roi_y1 = y1 + (y2 - y1) // 2  
-        roi_y2 = min(y2 + 80, h)    
+        roi_y1 = y1 + (y2 - y1) // 2
+        roi_y2 = min(y2 + 80, h)
         roi_x1 = max(0, x1)
         roi_x2 = min(w, x2)
 
         if roi_y1 >= roi_y2 or roi_x1 >= roi_x2:
             print(f"⚠️ Пропущен объединённый ROI: track_id={track_id}")
             continue
-        
+
         roi = image[roi_y1:roi_y2, roi_x1:roi_x2]
 
         if roi.size == 0 or roi.shape[0] < min_roi_height or roi.shape[1] < min_roi_width:
             print(f"⚠️ ROI слишком мал: {roi.shape}, track_id={track_id}")
             continue
-        
-        should_update = (frame_id % depth_update_every == 0) or (track_id not in cache)
+
+        should_update = (frame_id % depth_update_every ==
+                         0) or (track_id not in cache)
 
         if not should_update and track_id in cache:
             cached = cache[track_id]
@@ -83,13 +85,15 @@ def find_arch_center(
             if depth_map is None or depth_map.size == 0:
                 continue
 
-            depth_map = cv2.bilateralFilter(depth_map, d=9, sigmaColor=75, sigmaSpace=75)
+            depth_map = cv2.bilateralFilter(
+                depth_map, d=9, sigmaColor=75, sigmaSpace=75)
             min_idx = np.unravel_index(np.argmin(depth_map), depth_map.shape)
 
             arch_x = roi_x1 + min_idx[1]
             arch_y = roi_y1 + min_idx[0]
 
-            arch_center = ArchCenterDTO(x=int(arch_x), y=int(arch_y), source_detection=track_id)
+            arch_center = ArchCenterDTO(x=int(arch_x), y=int(
+                arch_y), source_detection=track_id)
             cache[track_id] = {"x": arch_x, "y": arch_y}
 
             print(f"🟢 Центр арки найден: x={arch_x}, y={arch_y}")

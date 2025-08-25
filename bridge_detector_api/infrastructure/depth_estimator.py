@@ -8,16 +8,18 @@ class DepthEstimator(DepthEstimatorInterface):
     def __init__(self, model_name="MiDaS_small", device="cpu"):
         self.device = torch.device(device)
         self.model_name = model_name
-        
-        self.model = torch.hub.load("isl-org/MiDaS", model_name) 
-        self.model.to(self.device) # type: ignore
-        self.model.eval() # type: ignore
+
+        self.model = torch.hub.load("isl-org/MiDaS", model_name)
+        self.model.to(self.device)  # type: ignore
+        self.model.eval()  # type: ignore
 
         if model_name == "MiDaS_small":
-            self.transform = torch.hub.load("isl-org/MiDaS", "transforms").small_transform # type: ignore
+            self.transform = torch.hub.load(
+                "isl-org/MiDaS", "transforms").small_transform  # type: ignore
         else:
-            self.transform = torch.hub.load("isl-org/MiDaS", "transforms").dpt_transform   # type: ignore
-            
+            self.transform = torch.hub.load(
+                "isl-org/MiDaS", "transforms").dpt_transform   # type: ignore
+
     def estimate(self, image):
         """
         Оценка карты глубины для входного изображения (numpy array, HxWxC, BGR).
@@ -27,11 +29,11 @@ class DepthEstimator(DepthEstimatorInterface):
         input_batch = self.transform(img_rgb).to(self.device)
 
         with torch.no_grad():
-            prediction = self.model(input_batch) # type: ignore
+            prediction = self.model(input_batch)  # type: ignore
 
             prediction = torch.nn.functional.interpolate(
-                prediction.unsqueeze(1), 
-                size=img_rgb.shape[:2],  
+                prediction.unsqueeze(1),
+                size=img_rgb.shape[:2],
                 mode="bicubic",
                 align_corners=False,
             ).squeeze().cpu().numpy()

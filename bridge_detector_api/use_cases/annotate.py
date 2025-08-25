@@ -4,7 +4,7 @@ from PIL import Image
 import numpy as np
 import cv2
 from typing import List
-from ..domain.detection_dto import DetectionDTO 
+from ..domain.detection_dto import DetectionDTO
 from ..domain.image_dto import ImageDTO
 from ..domain.annotated_image_dto import AnnotatedImageDTO
 
@@ -13,7 +13,7 @@ def annotated_image(
     img_dto: ImageDTO,
     detections: List[DetectionDTO]
 ) -> AnnotatedImageDTO:
-    
+
     img = np.array(img_dto.pixels, dtype=np.uint8)
     annotated_img = img.copy()
 

@@ -22,7 +22,7 @@ def process_packet(
         packet = json.loads(data.decode('utf-8'))
         b64_image = packet.get("frame")
         frame_id = packet.get("frame_id", 0)
-        
+
         if not b64_image:
             return json.dumps({"error": "No 'frame' in request"}).encode()
         image_bytes = base64.b64decode(b64_image)
@@ -33,7 +33,7 @@ def process_packet(
     try:
         img_dto = preprocess_image_dto(img_stream)
         image = img_dto.image
-        
+
         detections = detect_bridge(img_dto, detector)
 
         arch_center = find_arch_center(
@@ -44,7 +44,7 @@ def process_packet(
             depth_update_every=depth_update_every,
             cache=cache
         )
-        
+
         response = {
             "success": True,
             "detections": [
@@ -60,14 +60,14 @@ def process_packet(
                 for det in detections
             ]
         }
-        
+
         if arch_center:
             response["arch_center"] = {
                 "x": arch_center.x,
                 "y": arch_center.y
             }
-            
+
         return json.dumps(response).encode('utf-8')
-    
+
     except Exception as e:
         return json.dumps({"error": "Processing failed", "details": str(e)}).encode()

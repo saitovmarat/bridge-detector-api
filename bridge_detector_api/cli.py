@@ -1,10 +1,12 @@
 import click
 from .app import create_udp_server, create_rest_server
 
+
 @click.group()
 def cli():
     """CLI для запуска серверов BridgeVision."""
     pass
+
 
 @cli.command()
 @click.option('--host', default='0.0.0.0', help='Host для сервера')
@@ -13,6 +15,7 @@ def udp(host, port):
     """Запускает UDP-сервер для приёма кадров и отправки детекций."""
     click.echo(f"🚀 Запуск UDP-сервера на {host}:{port}")
     create_udp_server(host=host, port=port)
+
 
 @cli.command()
 @click.option('--host', default='0.0.0.0', help='Host для сервера')
@@ -23,6 +26,7 @@ def rest(host, port, debug):
     app = create_rest_server()
     click.echo(f"🌐 Запуск REST API на http://{host}:{port}")
     app.run(host=host, port=port, debug=debug)
+
 
 if __name__ == '__main__':
     cli()
