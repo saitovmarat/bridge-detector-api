@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 import cv2
 
@@ -20,7 +21,7 @@ class DepthEstimator(DepthEstimatorInterface):
             self.transform = torch.hub.load(
                 "isl-org/MiDaS", "transforms").dpt_transform   # type: ignore
 
-    def estimate(self, image):
+    def estimate(self, image: np.ndarray) -> np.ndarray:
         """
         Оценка карты глубины для входного изображения (numpy array, HxWxC, BGR).
         """

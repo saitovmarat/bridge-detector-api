@@ -2,7 +2,16 @@ from importlib.resources import files, as_file
 from ..infrastructure.yolo_detector import YoloDetector
 
 
-def load_model():
-    ref = files("bridge_detector_api.assets") / "best_weights.pt"
-    with as_file(ref) as model_path:
-        return YoloDetector(str(model_path))
+_model_cache = {}
+
+
+def load_model(weights_filename: str) -> YoloDetector:
+    if weights_filename in _model_cache:
+        return _model_cache[weights_filename]
+
+    ref = files("bridge_detector_api.assets") / weights_filename
+    with as_file(ref) as temp_path:
+        model = YoloDetector(str(temp_path))
+
+    _model_cache[weights_filename] = model
+    return model

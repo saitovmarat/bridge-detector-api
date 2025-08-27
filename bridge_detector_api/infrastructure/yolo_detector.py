@@ -1,13 +1,16 @@
-from ultralytics import YOLO
+import numpy as np
 from typing import List
+from ultralytics import YOLO
+
 from ..domain.detection_dto import DetectionDTO
+from ..domain.detector_interface import DetectorInterface
 
 
-class YoloDetector:
+class YoloDetector(DetectorInterface):
     def __init__(self, model_path: str):
         self.model = YOLO(model_path)
 
-    def detect(self, image) -> List[DetectionDTO]:
+    def detect(self, image: np.ndarray) -> List[DetectionDTO]:
         results = self.model.track(source=image, persist=True, verbose=False)
         if not results:
             return []
@@ -29,7 +32,6 @@ class YoloDetector:
         for i in range(len(xyxy)):
             x1, y1, x2, y2 = xyxy[i]
             detection = DetectionDTO(
-                class_name="bridge",
                 confidence=float(conf[i]),
                 x1=float(x1),
                 y1=float(y1),
