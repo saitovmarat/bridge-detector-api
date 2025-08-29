@@ -107,10 +107,12 @@ ENV/
 # IDE settings
 .vscode/
 .idea/
+.vs/
 
 output/
 images/
 testing
+runs
 
 *.png
 *.npy

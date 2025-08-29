@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "bridge_detector_api"
+name = "drone_navigation_api"
 version = "0.1.2"
 description = "API for detecting bridges on images"
 readme = "README.md"
@@ -83,15 +83,15 @@ doc = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["bridge_detector_api*"]
+include = ["drone_navigation_api*"]
 
 [tool.setuptools.package-data]
-bridge_detector_api = ["assets/*.pt"]
+drone_navigation_api = ["assets/*.pt"]
 
 [project.urls]
 Homepage = "https://example.com"
-Repository = "https://github.com/saitovmarat/bridge-detector-api"
+Repository = "https://github.com/saitovmarat/drone-navigation-api"
 Documentation = "https://example.com/docs"
 
 [project.scripts]
-bridge_detector_api = "bridge_detector_api.cli:cli"
+drone_navigation_api = "drone_navigation_api.cli:cli"
