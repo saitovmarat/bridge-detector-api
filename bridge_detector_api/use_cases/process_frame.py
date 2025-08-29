@@ -4,11 +4,14 @@ import base64
 import numpy as np
 from typing import Any, Dict
 
+
 from .get_target_point import get_target_point
 from ..domain.detector_interface import DetectorInterface
 from ..domain.depth_estimator_interface import DepthEstimatorInterface
-from ..utils.update_bridge_confirmation import update_bridge_confirmation
 from ..utils.is_bridge_confirmed import is_bridge_confirmed
+from ..utils.is_tracking_lost import is_tracking_lost
+from ..utils.update_object_confirmation import update_object_confirmation
+from ..utils.reset_confirmation_state import reset_confirmation_state
 
 
 def process_frame(
@@ -30,26 +33,38 @@ def process_frame(
 
     try:
         bridge_detections = bridge_detector.detect(image)
-        update_bridge_confirmation(bridge_detections, cache)
-
-        if is_bridge_confirmed(cache):
-            arch_gap_detections = arch_gap_detector.detect(image)
-            target_point = get_target_point(
-                image=image,
-                depth_estimator=depth_estimator,
-                arch_gap_detections=arch_gap_detections
-            )
-            result = {
-                "status": "bridge_confirmed",
-                "arch_gap_detections": [det.to_dict() for det in arch_gap_detections],
-                "target_point": target_point.to_dict() if target_point else {}
-            }
-        else:
+        update_object_confirmation("bridge", bridge_detections, cache)
+        
+        if not is_bridge_confirmed(cache):
             result = {
                 "status": "detecting",
-                "bridge_detections": [det.to_dict() for det in bridge_detections],
+                "detections": [det.to_dict() for det in bridge_detections],
                 "target_point": {}
             }
+        else:
+            arch_gap_detections = arch_gap_detector.detect(image)
+            update_object_confirmation("arch_gap", arch_gap_detections, cache)
+            
+            if is_tracking_lost("arch_gap", cache):
+                reset_confirmation_state(cache)
+                result = {
+                    "status": "detecting",
+                    "detections": [det.to_dict() for det in bridge_detections],
+                    "target_point": {}
+                }
+            else:
+                target_point = get_target_point(
+                    image=image,
+                    depth_estimator=depth_estimator,
+                    arch_gap_detections=arch_gap_detections,
+                    cache=cache
+                ) if arch_gap_detections else None
+                
+                result = {
+                    "status": "bridge_confirmed",
+                    "detections": [det.to_dict() for det in arch_gap_detections],
+                    "target_point": target_point.to_dict() if target_point else {}
+                }
 
     except Exception as e:
         return {"error": "Processing failed", "details": str(e)}

@@ -1,13 +1,18 @@
 from typing import Any, Dict
 
 
-def is_bridge_confirmed(cache: Dict[str, Any]) -> bool:
+def is_bridge_confirmed(
+    cache: Dict[str, Any],
+    min_detections: int = 9, 
+    window: int = 10
+) -> bool:
+    
     history = cache.get("bridge_detection_history", [])
-    if len(history) < 5:
+    if len(history) < window:
         return False
 
-    recent = history[-5:]
-    return sum(recent) >= 4
+    recent = history[-window:]
+    return sum(recent) >= min_detections
 
 
 # Разные реализации метода

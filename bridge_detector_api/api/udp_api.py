@@ -67,15 +67,15 @@ def run_udp_server(host: str = "0.0.0.0", port: int = 9999):
                     except Exception as e:
                         response = {"error": "Processing failed",
                                     "details": str(e)}
-                try:
-                    response_bytes = json.dumps(
-                        response,
-                        ensure_ascii=False,
-                        separators=(',', ':')
-                    ).encode('utf-8')
-                    sock.sendto(response_bytes, addr)
-                except Exception as e:
-                    print(f"❌ Не удалось отправить ответ: {e}")
+                # try:
+                response_bytes = json.dumps(
+                    response,
+                    ensure_ascii=False,
+                    separators=(',', ':')
+                ).encode('utf-8')
+                sock.sendto(response_bytes, addr)
+                # except Exception as e:
+                #     print(f"❌ Не удалось отправить ответ: {e}")
 
             except socket.timeout:
                 continue
